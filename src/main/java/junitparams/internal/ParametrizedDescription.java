@@ -3,6 +3,8 @@ package junitparams.internal;
 import junitparams.naming.TestCaseNamingStrategy;
 import org.junit.runner.Description;
 
+import java.lang.annotation.Annotation;
+
 class ParametrizedDescription {
 
     private TestCaseNamingStrategy namingStrategy;
@@ -15,14 +17,13 @@ class ParametrizedDescription {
         this.methodName = methodName;
     }
 
-    Description parametrizedDescription(Object[] params) {
-        Description parametrised = Description.createSuiteDescription(methodName);
+    Description parametrizedDescription(Object[] params, Annotation... annotations) {
+        Description parametrised = Description.createSuiteDescription(methodName, annotations);
         for (int i = 0; i < params.length; i++) {
             Object paramSet = params[i];
             String name = namingStrategy.getTestCaseName(i, paramSet);
-            String uniqueMethodId = Utils.uniqueMethodId(i, paramSet, methodName);
             parametrised.addChild(
-                    Description.createTestDescription(testClassName, name, uniqueMethodId)
+                    Description.createTestDescription(testClassName, name, annotations)
             );
         }
         return parametrised;
